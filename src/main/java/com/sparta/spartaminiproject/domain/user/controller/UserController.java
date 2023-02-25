@@ -5,6 +5,8 @@ import com.sparta.spartaminiproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -15,5 +17,11 @@ public class UserController {
     public String signup(@RequestBody UserDto.SignupRequest signupRequest){
         userService.signup(signupRequest);
         return "회원가입 성공";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserDto.LoginRequest loginRequest, HttpServletResponse response){
+        userService.login(loginRequest, response);
+        return "로그인 성공";
     }
 }
