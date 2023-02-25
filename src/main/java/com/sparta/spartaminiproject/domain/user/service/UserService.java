@@ -1,22 +1,26 @@
 package com.sparta.spartaminiproject.domain.user.service;
 
+import com.sparta.spartaminiproject.common.dto.SendMessageDto;
+import com.sparta.spartaminiproject.common.jwt.JwtUtil;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import com.sparta.spartaminiproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Optional;
-
-import static com.sparta.spartaminiproject.domain.user.entity.UserDormitory.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
 
     @Transactional
     public void signup(UserDto.SignupRequest signupRequest){
@@ -49,9 +53,11 @@ public class UserService {
         userRepository.save(user);
     }
     @Transactional
-    public void login(UserDto.LoginRequest loginRequest, HttpServletResponse response){
+    public ResponseEntity<SendMessageDto> login(UserDto.LoginRequest loginRequest){
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
+        UserDormitory dormitory = UserDormitory.NONE;
+
 
         //아이디 확인
         User user = userRepository.findByUsername(username).orElseThrow(
@@ -59,7 +65,20 @@ public class UserService {
         );
 
         if(!password.equals(user.getPassword())){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest()
+                    .body(SendMessageDto.builder()
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .message("비밀번호가 일치하지 않습니다.")
+                            .build());
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getDormitory()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(SendMessageDto.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("로그인 성공")
+                        .build());
     }
 }

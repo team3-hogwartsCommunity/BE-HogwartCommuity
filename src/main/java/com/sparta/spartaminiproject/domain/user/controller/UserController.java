@@ -1,11 +1,11 @@
 package com.sparta.spartaminiproject.domain.user.controller;
 
+import com.sparta.spartaminiproject.common.dto.SendMessageDto;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserDto.LoginRequest loginRequest, HttpServletResponse response){
-        userService.login(loginRequest, response);
-        return "로그인 성공";
+    public ResponseEntity<SendMessageDto> login(@RequestBody UserDto.LoginRequest loginRequestDto) {
+        return userService.login(loginRequestDto);
     }
 }
