@@ -44,7 +44,7 @@ public class WebSecurityConfig {
 //        http.formLogin().loginPage("/api/user/login-page").permitAll();
 
         // JwtAuthFilter 등록하기
-//        http.addFilterBefore(new CustomSecurityFilter(userDetailsService, passwordEncoder()), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new CustomSecurityFilter( passwordEncoder()), UsernamePasswordAuthenticationFilter.class);
         .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
