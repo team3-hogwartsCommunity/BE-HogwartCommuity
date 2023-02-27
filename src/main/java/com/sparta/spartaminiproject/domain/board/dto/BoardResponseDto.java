@@ -1,7 +1,11 @@
 package com.sparta.spartaminiproject.domain.board.dto;
 
 import com.sparta.spartaminiproject.domain.board.entity.Board;
+import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
+import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import lombok.Getter;
+
+import java.util.List;
 
 public class BoardResponseDto {
 
@@ -31,13 +35,15 @@ public class BoardResponseDto {
         private final String contents;
         private final Long like;
         private final String createAt;
+        private final List<CommentDto.Response> commentList;
 
-        public OneBoard(Board board) {
+        public OneBoard(Board board, List<CommentDto.Response> commentList) {
             this.id = board.getId();
             this.title = board.getTitle();
             this.contents = board.getContents();
             this.like = 0L;
             this.createAt = board.getCreatedAt().toString().replace("T", " T").substring(0, 20);
+            this.commentList = commentList;
         }
     }
 }

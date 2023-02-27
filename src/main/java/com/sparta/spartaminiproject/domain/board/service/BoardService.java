@@ -4,6 +4,9 @@ import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
 import com.sparta.spartaminiproject.domain.board.entity.Board;
 import com.sparta.spartaminiproject.domain.board.repository.BoardRepository;
+import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
+import com.sparta.spartaminiproject.domain.comment.entity.Comment;
+import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
@@ -42,7 +46,18 @@ public class BoardService {
     public BoardResponseDto.OneBoard showBoard(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        return new BoardResponseDto.OneBoard(board);
+        List<Comment> commentList = commentRepository.findAllByBoardId(id);
+        if (commentList.size() == 0) {
+            return new BoardResponseDto.OneBoard(board, new ArrayList<>());
+        }
+
+        List<CommentDto.Response> commentResponseDtoList = new ArrayList<>(commentList.size());
+
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(new CommentDto.Response(comment));
+        }
+
+        return new BoardResponseDto.OneBoard(board, commentResponseDtoList);
     }
 
     // 게시글 작성
