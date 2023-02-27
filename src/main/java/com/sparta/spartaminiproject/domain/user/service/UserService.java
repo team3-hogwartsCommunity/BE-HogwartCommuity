@@ -1,7 +1,7 @@
 package com.sparta.spartaminiproject.domain.user.service;
 
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
-import com.sparta.spartaminiproject.common.jwt.JwtUtil;
+import com.sparta.spartaminiproject.common.security.jwt.JwtUtil;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
