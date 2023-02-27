@@ -1,4 +1,4 @@
-package com.sparta.spartaminiproject.common.jwt;
+package com.sparta.spartaminiproject.common.security.jwt;
 
 
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
@@ -54,8 +54,8 @@ public class JwtUtil {
                 Jwts.builder()
                         .setSubject(username)
                         .claim(AUTHORIZATION_KEY, dormitory)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
-                        .setIssuedAt(date)
+//                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+//                        .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
