@@ -8,6 +8,7 @@ import com.sparta.spartaminiproject.domain.board.repository.BoardLikeRepository;
 import com.sparta.spartaminiproject.domain.board.repository.BoardRepository;
 import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
 import com.sparta.spartaminiproject.domain.comment.entity.Comment;
+import com.sparta.spartaminiproject.domain.comment.repository.CommentLikeRepository;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
@@ -26,6 +27,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
@@ -58,7 +60,7 @@ public class BoardService {
         List<CommentDto.Response> commentResponseDtoList = new ArrayList<>(commentList.size());
 
         for (Comment comment : commentList) {
-            commentResponseDtoList.add(new CommentDto.Response(comment));
+            commentResponseDtoList.add(new CommentDto.Response(comment, commentLikeRepository.countByCommentIdAndIsShow(comment.getId(), 1)));
         }
 
         return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), commentResponseDtoList);

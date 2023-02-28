@@ -18,10 +18,10 @@ public class CommentDto {
         private final Long like;
         private final String createAt;
 
-        public Response(Comment comment) {
+        public Response(Comment comment, Long like) {
             this.id = comment.getId();
             this.contents = comment.getContents();
-            this.like = 0L;
+            this.like = like;
             this.createAt = comment.getCreatedAt().toString().replace("T", " T").substring(0, 20);
         }
     }
