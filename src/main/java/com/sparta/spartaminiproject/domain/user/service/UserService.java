@@ -10,6 +10,7 @@ import com.sparta.spartaminiproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,10 +23,12 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public void signup(UserDto.SignupRequest signupRequest){
         String username = signupRequest.getUsername();
-        String password = signupRequest.getPassword();
+        String password = passwordEncoder.encode(signupRequest.getPassword());
         UserDormitory dormitory = UserDormitory.NONE;
 
 
@@ -44,6 +47,7 @@ public class UserService {
 //        }else if (signupRequest.getDormitory().equals(Ravenclaw)) {
 //            dormitory = Ravenclaw;
 //        }else dormitory = Slytherin;
+
 
         User user = User.builder()
                 .username(username)
@@ -67,7 +71,7 @@ public class UserService {
         Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()){
             throw new IllegalArgumentException("사용자가 등록되지 않았습니다");
-        } else if (!password.equals(user.get().getPassword())) {
+        } else if (!passwordEncoder.matches(password, user.get().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
         }
 
