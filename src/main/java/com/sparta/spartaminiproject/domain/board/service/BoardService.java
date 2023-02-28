@@ -35,8 +35,8 @@ public class BoardService {
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
-    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, int page, int size, User user) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
         List<Board> boardList = boardRepository.findAllByDormitory(dormitory, pageable).getContent();   // getContent()로 List로 반환 받을 수 있음
 
@@ -73,22 +73,34 @@ public class BoardService {
 
     // 게시글 작성
     @Transactional
-    public void writeBoard(BoardRequestDto.Write boardWriteRequestDto) {
-        boardRepository.save(new Board(boardWriteRequestDto));
+    public void writeBoard(BoardRequestDto.Write boardWriteRequestDto, User user) {
+        if (user.getDormitory() != boardWriteRequestDto.getDormitory()) {
+            throw new IllegalArgumentException("해당 게시판의 기숙사 학생이 아닙니다.");
+        }
+
+        boardRepository.save(new Board(boardWriteRequestDto, user));
     }
 
     // 게시글 수정
     @Transactional
-    public void editBoard(Long id, BoardRequestDto.Edit boardEditRequestDto) {
+    public void editBoard(Long id, BoardRequestDto.Edit boardEditRequestDto, User user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        if (user.getId() != board.getUser().getId()) {
+            throw new IllegalArgumentException("해당 글의 작성자가 아닙니다.");
+        }
 
         board.update(boardEditRequestDto);
     }
 
     // 게시글 삭제
     @Transactional
-    public void removeBoard(Long id) {
-        boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+    public void removeBoard(Long id, User user) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        if (user.getId() != board.getUser().getId()) {
+            throw new IllegalArgumentException("해당 글의 작성자가 아닙니다.");
+        }
 
         boardRepository.deleteById(id);
     }
