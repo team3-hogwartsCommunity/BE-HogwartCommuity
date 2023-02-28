@@ -2,7 +2,6 @@ package com.sparta.spartaminiproject.domain.board.dto;
 
 import com.sparta.spartaminiproject.domain.board.entity.Board;
 import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
-import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import lombok.Getter;
 
 import java.util.List;

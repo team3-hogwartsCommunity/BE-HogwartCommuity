@@ -3,9 +3,11 @@ package com.sparta.spartaminiproject.domain.board.controller;
 import com.sparta.spartaminiproject.common.security.user.UserDetailsImpl;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
+import com.sparta.spartaminiproject.domain.board.entity.Board;
 import com.sparta.spartaminiproject.domain.board.service.BoardService;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,8 @@ public class BoardController {
 
     // 기숙사로 게시글 리스트 조회
     @GetMapping("/boards")
-    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.showBoardListFilterDormitory(dormitory, userDetails.getUser());
+    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.showBoardListFilterDormitory(dormitory, page, size, userDetails.getUser());
     }
 
     // 게시글 하나 조회

@@ -12,6 +12,10 @@ import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +33,17 @@ public class BoardService {
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
-    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, User user) {
-        List<Board> allByDormitory = boardRepository.findAllByDormitory(dormitory);
+    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, int page, int size, User user) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        // 글이 없는 경우 그냥 빈 배열
-        if (allByDormitory.size() == 0) {
-            return new ArrayList<>();
+        List<Board> boardList = boardRepository.findAllByDormitory(dormitory, pageable).getContent();   // getContent()로 List로 반환 받을 수 있음
+
+        if (boardList.size() == 0) {
+            throw new NullPointerException("아직 게시글이 존재하지 않습니다.");
         }
 
-        List<BoardResponseDto.BoardList> boardDtoList = new ArrayList<>(allByDormitory.size());
-        for (Board board : allByDormitory) {
+        List<BoardResponseDto.BoardList> boardDtoList = new ArrayList<>(boardList.size());
+        for (Board board : boardList) {
             boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), 1)));
         }
 
