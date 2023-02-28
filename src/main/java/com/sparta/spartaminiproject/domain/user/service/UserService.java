@@ -7,13 +7,13 @@ import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import com.sparta.spartaminiproject.domain.user.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
