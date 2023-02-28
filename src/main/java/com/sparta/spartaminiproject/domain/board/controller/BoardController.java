@@ -23,8 +23,8 @@ public class BoardController {
 
     // 기숙사로 게시글 리스트 조회
     @GetMapping("/boards")
-    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.showBoardListFilterDormitory(dormitory, page, size, userDetails.getUser());
+    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @RequestParam int page, @RequestParam int size) {
+        return boardService.showBoardListFilterDormitory(dormitory, page, size);
     }
 
     // 게시글 하나 조회
@@ -35,22 +35,22 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/board")
-    public String postBoard(@RequestBody BoardRequestDto.Write boardWriteRequestDto) {
-        boardService.writeBoard(boardWriteRequestDto);
+    public String postBoard(@RequestBody BoardRequestDto.Write boardWriteRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.writeBoard(boardWriteRequestDto, userDetails.getUser());
         return "작성 성공";
     }
 
     // 게시글 수정
     @PutMapping("/board/{id}")
-    public String putBoard(@PathVariable Long id, @RequestBody BoardRequestDto.Edit boardWriteRequestDto) {
-        boardService.editBoard(id, boardWriteRequestDto);
+    public String putBoard(@PathVariable Long id, @RequestBody BoardRequestDto.Edit boardWriteRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.editBoard(id, boardWriteRequestDto, userDetails.getUser());
         return "수정 성공";
     }
 
     // 게시글 삭제
     @DeleteMapping("/board/{id}")
-    public String deleteBoard(@PathVariable Long id) {
-        boardService.removeBoard(id);
+    public String deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.removeBoard(id, userDetails.getUser());
         return "삭제 성공";
     }
 
