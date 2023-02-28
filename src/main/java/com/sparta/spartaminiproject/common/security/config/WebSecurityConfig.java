@@ -4,11 +4,13 @@ import com.sparta.spartaminiproject.common.security.jwt.JwtAuthFilter;
 import com.sparta.spartaminiproject.common.security.jwt.JwtUtil;
 import com.sparta.spartaminiproject.common.security.user.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,16 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // h2-console 사용 및 resources 접근 허용 설정
+        return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+//                // 정적 자원에 대해서는 Security 설정을 적용하지 않음
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

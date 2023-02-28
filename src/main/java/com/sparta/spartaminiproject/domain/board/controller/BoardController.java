@@ -1,10 +1,12 @@
 package com.sparta.spartaminiproject.domain.board.controller;
 
+import com.sparta.spartaminiproject.common.security.user.UserDetailsImpl;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
 import com.sparta.spartaminiproject.domain.board.service.BoardService;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +21,8 @@ public class BoardController {
 
     // 기숙사로 게시글 리스트 조회
     @GetMapping("/boards")
-    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory) {
-        return boardService.showBoardListFilterDormitory(dormitory);
+    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.showBoardListFilterDormitory(dormitory, userDetails.getUser());
     }
 
     // 게시글 하나 조회
@@ -48,5 +50,11 @@ public class BoardController {
     public String deleteBoard(@PathVariable Long id) {
         boardService.removeBoard(id);
         return "삭제 성공";
+    }
+
+    // 게시글 좋아요
+    @PostMapping("/board/{id}/like")
+    public String postBoardLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.toggleBoardLike(id, userDetails.getUser());
     }
 }
