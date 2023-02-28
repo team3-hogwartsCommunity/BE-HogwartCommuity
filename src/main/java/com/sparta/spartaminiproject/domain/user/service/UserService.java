@@ -43,13 +43,13 @@ public class UserService {
         //기숙사 확인
         UserDormitory dormitory = UserDormitory.NONE;
         if (signupRequest.getDormitory() == Gryffindor) {
-            dormitory = Gryffindor;
+            dormitory = UserDormitory.Gryffindor;
         } else if (signupRequest.getDormitory() == Hufflepuff) {
-            dormitory = Hufflepuff;
+            dormitory = UserDormitory.Hufflepuff;
         } else if (signupRequest.getDormitory() == Ravenclaw) {
-            dormitory = Ravenclaw;
+            dormitory = UserDormitory.Ravenclaw;
         } else if (signupRequest.getDormitory() == Slytherin) {
-            dormitory = Slytherin;
+            dormitory = UserDormitory.Slytherin;
         }
 
 
