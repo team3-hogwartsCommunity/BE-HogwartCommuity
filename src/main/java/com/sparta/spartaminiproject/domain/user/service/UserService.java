@@ -28,7 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(UserDto.SignupRequest signupRequest){
+    public void signup(UserDto.SignupRequest signupRequest) {
         String username = signupRequest.getUsername();
         String password = passwordEncoder.encode(signupRequest.getPassword());
 //        UserDormitory dormitory = UserDormitory.NONE;
@@ -42,48 +42,38 @@ public class UserService {
 
         //기숙사 확인
         UserDormitory dormitory = UserDormitory.NONE;
-        if (signupRequest.getDormitory().equals(Gryffindor)) {
+        if (signupRequest.getDormitory() == Gryffindor) {
             dormitory = Gryffindor;
-        } else if (signupRequest.getDormitory().equals(Hufflepuff)) {
+        } else if (signupRequest.getDormitory() == Hufflepuff) {
             dormitory = Hufflepuff;
-        }else if (signupRequest.getDormitory().equals(Ravenclaw)) {
+        } else if (signupRequest.getDormitory() == Ravenclaw) {
             dormitory = Ravenclaw;
-        }else dormitory = Slytherin;
+        } else if (signupRequest.getDormitory() == Slytherin) {
+            dormitory = Slytherin;
+        }
 
 
-        User user = User.builder()
-                .username(username)
-                .password(password)
-                .dormitory(dormitory)
-                .build();
+            User user = User.builder()
+                    .username(username)
+                    .password(password)
+                    .dormitory(dormitory)
+                    .build();
         userRepository.save(user);
     }
+
     @Transactional
-    public ResponseEntity<SendMessageDto> login(UserDto.LoginRequest loginRequest){
+    public ResponseEntity<SendMessageDto> login(UserDto.LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         UserDormitory dormitory = UserDormitory.NONE;
 
-
-        //아이디 확인
-//        User user = userRepository.findByUsername(username).orElseThrow(
-//                () -> new IllegalArgumentException("사용자가 등록되지 않았습니다.")
-//        );
-
         Optional<User> user = userRepository.findByUsername(username);
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new IllegalArgumentException("사용자가 등록되지 않았습니다");
         } else if (!passwordEncoder.matches(password, user.get().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
         }
 
-//        if(!password.equals(user.getPassword())){
-//            return ResponseEntity.badRequest()
-//                    .body(SendMessageDto.builder()
-//                            .statusCode(HttpStatus.BAD_REQUEST.value())
-//                            .message("비밀번호가 일치하지 않습니다.")
-//                            .build());
-//        }
         HttpHeaders headers = new HttpHeaders();
         headers.set(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getDormitory()));
 
