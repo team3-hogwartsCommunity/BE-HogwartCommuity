@@ -1,4 +1,4 @@
-package com.sparta.spartaminiproject.domain.board.entity;
+package com.sparta.spartaminiproject.domain.comment.entity;
 
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class BoardLike {
+public class CommentLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,16 +20,16 @@ public class BoardLike {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "comment_id", nullable = false)
+    private Comment comment;
 
     @Column(nullable = false)
     private Integer isShow;
 
-    public BoardLike(User user, Board board) {
+    public CommentLike(User user, Comment comment) {
         this.user = user;
-        this.board = board;
-        isShow = 1;
+        this.comment = comment;
+        this.isShow = 1;
     }
 
     public void toggleLike(Integer isShow) {
