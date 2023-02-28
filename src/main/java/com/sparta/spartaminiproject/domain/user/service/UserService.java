@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.sparta.spartaminiproject.domain.user.entity.UserDormitory.*;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -29,7 +31,7 @@ public class UserService {
     public void signup(UserDto.SignupRequest signupRequest){
         String username = signupRequest.getUsername();
         String password = passwordEncoder.encode(signupRequest.getPassword());
-        UserDormitory dormitory = UserDormitory.NONE;
+//        UserDormitory dormitory = UserDormitory.NONE;
 
 
         //중복확인
@@ -39,14 +41,14 @@ public class UserService {
         }
 
         //기숙사 확인
-//        UserDormitory dormitory = UserDormitory.NONE;
-//        if (signupRequest.getDormitory().equals(Gryffindor)) {
-//            dormitory = UserDormitory.Gryffindor;
-//        } else if (signupRequest.getDormitory().equals(Hufflepuff)) {
-//            dormitory = Hufflepuff;
-//        }else if (signupRequest.getDormitory().equals(Ravenclaw)) {
-//            dormitory = Ravenclaw;
-//        }else dormitory = Slytherin;
+        UserDormitory dormitory = UserDormitory.NONE;
+        if (signupRequest.getDormitory().equals(Gryffindor)) {
+            dormitory = Gryffindor;
+        } else if (signupRequest.getDormitory().equals(Hufflepuff)) {
+            dormitory = Hufflepuff;
+        }else if (signupRequest.getDormitory().equals(Ravenclaw)) {
+            dormitory = Ravenclaw;
+        }else dormitory = Slytherin;
 
 
         User user = User.builder()
