@@ -18,11 +18,11 @@ public class BoardResponseDto {
         private final Long like;
         private final String createAt;
 
-        public BoardList(Board board) {
+        public BoardList(Board board, Long like) {
             this.id = board.getId();
             this.title = board.getTitle();
             sub = board.getContents();
-            this.like = 0L;
+            this.like = like;
             this.createAt = board.getCreatedAt().toString().replace("T", " T").substring(0, 20);
         }
     }
@@ -37,11 +37,11 @@ public class BoardResponseDto {
         private final String createAt;
         private final List<CommentDto.Response> commentList;
 
-        public OneBoard(Board board, List<CommentDto.Response> commentList) {
+        public OneBoard(Board board, Long like, List<CommentDto.Response> commentList) {
             this.id = board.getId();
             this.title = board.getTitle();
             this.contents = board.getContents();
-            this.like = 0L;
+            this.like = like;
             this.createAt = board.getCreatedAt().toString().replace("T", " T").substring(0, 20);
             this.commentList = commentList;
         }

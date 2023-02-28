@@ -3,10 +3,13 @@ package com.sparta.spartaminiproject.domain.board.service;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
 import com.sparta.spartaminiproject.domain.board.entity.Board;
+import com.sparta.spartaminiproject.domain.board.entity.BoardLike;
+import com.sparta.spartaminiproject.domain.board.repository.BoardLikeRepository;
 import com.sparta.spartaminiproject.domain.board.repository.BoardRepository;
 import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
 import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
+import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +25,12 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
-    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory) {
+    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, User user) {
         List<Board> allByDormitory = boardRepository.findAllByDormitory(dormitory);
-
 
         // 글이 없는 경우 그냥 빈 배열
         if (allByDormitory.size() == 0) {
@@ -35,7 +39,7 @@ public class BoardService {
 
         List<BoardResponseDto.BoardList> boardDtoList = new ArrayList<>(allByDormitory.size());
         for (Board board : allByDormitory) {
-            boardDtoList.add(new BoardResponseDto.BoardList(board));
+            boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), 1)));
         }
 
         return boardDtoList;
@@ -48,7 +52,7 @@ public class BoardService {
 
         List<Comment> commentList = commentRepository.findAllByBoardId(id);
         if (commentList.size() == 0) {
-            return new BoardResponseDto.OneBoard(board, new ArrayList<>());
+            return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), new ArrayList<>());
         }
 
         List<CommentDto.Response> commentResponseDtoList = new ArrayList<>(commentList.size());
@@ -57,7 +61,7 @@ public class BoardService {
             commentResponseDtoList.add(new CommentDto.Response(comment));
         }
 
-        return new BoardResponseDto.OneBoard(board, commentResponseDtoList);
+        return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), commentResponseDtoList);
     }
 
     // 게시글 작성
@@ -80,5 +84,26 @@ public class BoardService {
         boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         boardRepository.deleteById(id);
+    }
+
+    // 게시글 좋아요
+    @Transactional
+    public String toggleBoardLike(Long id, User user) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        Optional<BoardLike> boardLikeOptional = boardLikeRepository.findByBoardIdAndUserId(id, user.getId());
+        if (boardLikeOptional.isPresent()) {
+            BoardLike boardLike = boardLikeOptional.get();
+            if (boardLike.getIsShow() == 1) {
+                boardLike.toggleLike(0);
+                return "안 좋아요";
+            } else {
+                boardLike.toggleLike(1);
+            }
+        } else {
+            boardLikeRepository.save(new BoardLike(user, board));
+        }
+
+        return "좋아요";
     }
 }
