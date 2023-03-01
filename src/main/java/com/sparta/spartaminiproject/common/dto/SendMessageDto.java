@@ -31,6 +31,13 @@ public class SendMessageDto {
                 .build();
     }
 
+    public static SendMessageDto of(ErrorCode errorCode) {
+        return SendMessageDto.builder()
+                .statusCode(errorCode.getHttpStatus().value())
+                .message(errorCode.getMessage())
+                .build();
+    }
+
     public static ResponseEntity<SendMessageDto> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus().value())
                 .body(SendMessageDto.builder()

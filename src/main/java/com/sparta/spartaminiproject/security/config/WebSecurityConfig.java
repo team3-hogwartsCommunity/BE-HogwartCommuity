@@ -1,5 +1,7 @@
 package com.sparta.spartaminiproject.security.config;
 
+import com.sparta.spartaminiproject.security.filter.CustomAccessDeniedHandler;
+import com.sparta.spartaminiproject.security.filter.CustomAuthenticationEntryPoint;
 import com.sparta.spartaminiproject.security.jwt.JwtAuthFilter;
 import com.sparta.spartaminiproject.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/api/user/signup").permitAll()
                 .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/api/user/checkup").permitAll()
                 .antMatchers("/api/boards").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
                 .antMatchers("/api/board/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
                 .antMatchers("/api/comment/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
@@ -69,7 +72,11 @@ public class WebSecurityConfig {
 
         // JwtAuthFilter 등록하기
 //        http.addFilterBefore(new CustomSecurityFilter( passwordEncoder()), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
+                .and()
+                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
         // 접근 제한 페이지 이동 설정
