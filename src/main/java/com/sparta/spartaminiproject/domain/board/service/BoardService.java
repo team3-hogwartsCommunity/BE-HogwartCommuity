@@ -39,11 +39,11 @@ public class BoardService {
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
-    public BoardResponseDto.BoardListWithTotalPages showBoardListFilterDormitory(UserDormitory dormitory, int page, int size) {
+    public BoardResponseDto.BoardListWithTotalCount showBoardListFilterDormitory(UserDormitory dormitory, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Board> boardPaging = boardRepository.findAllByDormitory(dormitory, pageable);
-        int boardTotalPage = boardPaging.getTotalPages();
+        long boardTotalCount = boardPaging.getTotalElements();
         List<Board> boardList = boardPaging.getContent();   // getContent()로 List로 반환 받을 수 있음
 
 //        if (boardList.size() == 0) {
@@ -55,7 +55,7 @@ public class BoardService {
             boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), 1)));
         }
 
-        return new BoardResponseDto.BoardListWithTotalPages(boardTotalPage, boardDtoList);
+        return new BoardResponseDto.BoardListWithTotalCount(boardTotalCount, boardDtoList);
     }
 
     // 게시글 하나 조회
