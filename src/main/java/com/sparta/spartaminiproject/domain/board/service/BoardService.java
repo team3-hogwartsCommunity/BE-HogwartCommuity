@@ -16,6 +16,7 @@ import com.sparta.spartaminiproject.domain.recomment.repository.ReCommentReposit
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,10 +39,12 @@ public class BoardService {
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)
-    public List<BoardResponseDto.BoardList> showBoardListFilterDormitory(UserDormitory dormitory, int page, int size) {
+    public BoardResponseDto.BoardListWithTotalPages showBoardListFilterDormitory(UserDormitory dormitory, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-        List<Board> boardList = boardRepository.findAllByDormitory(dormitory, pageable).getContent();   // getContent()로 List로 반환 받을 수 있음
+        Page<Board> boardPaging = boardRepository.findAllByDormitory(dormitory, pageable);
+        int boardTotalPage = boardPaging.getTotalPages();
+        List<Board> boardList = boardPaging.getContent();   // getContent()로 List로 반환 받을 수 있음
 
 //        if (boardList.size() == 0) {
 //            throw new NullPointerException("아직 게시글이 존재하지 않습니다.");
@@ -52,7 +55,7 @@ public class BoardService {
             boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), 1)));
         }
 
-        return boardDtoList;
+        return new BoardResponseDto.BoardListWithTotalPages(boardTotalPage, boardDtoList);
     }
 
     // 게시글 하나 조회
