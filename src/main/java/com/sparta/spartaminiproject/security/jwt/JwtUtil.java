@@ -1,7 +1,7 @@
-package com.sparta.spartaminiproject.common.security.jwt;
+package com.sparta.spartaminiproject.security.jwt;
 
 
-import com.sparta.spartaminiproject.common.security.user.UserDetailsServiceImpl;
+import com.sparta.spartaminiproject.security.user.UserDetailsServiceImpl;
 import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

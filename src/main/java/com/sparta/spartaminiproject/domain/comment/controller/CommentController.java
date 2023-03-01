@@ -1,7 +1,7 @@
 package com.sparta.spartaminiproject.domain.comment.controller;
 
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
-import com.sparta.spartaminiproject.common.security.user.UserDetailsImpl;
+import com.sparta.spartaminiproject.security.user.UserDetailsImpl;
 import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
 import com.sparta.spartaminiproject.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;

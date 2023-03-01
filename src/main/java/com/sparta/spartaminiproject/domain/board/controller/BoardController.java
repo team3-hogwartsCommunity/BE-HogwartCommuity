@@ -1,7 +1,7 @@
 package com.sparta.spartaminiproject.domain.board.controller;
 
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
-import com.sparta.spartaminiproject.common.security.user.UserDetailsImpl;
+import com.sparta.spartaminiproject.security.user.UserDetailsImpl;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
 import com.sparta.spartaminiproject.domain.board.service.BoardService;
@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

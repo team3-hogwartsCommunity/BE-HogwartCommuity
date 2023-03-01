@@ -10,6 +10,8 @@ import com.sparta.spartaminiproject.domain.comment.entity.CommentLike;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentLikeRepository;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
+import com.sparta.spartaminiproject.exception.CustomException;
+import com.sparta.spartaminiproject.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class CommentService {
 
     // 댓글 작성
     public ResponseEntity<SendMessageDto> writeComment(Long boardId, CommentDto.Request commentRequestDto, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.NULL_BOARD_DATA));
 
         commentRepository.save(new Comment(commentRequestDto.getContents(), board, user));
 
@@ -39,12 +41,12 @@ public class CommentService {
 
     // 댓글 수정
     public ResponseEntity<SendMessageDto> editComment(Long boardId, Long id, CommentDto.Request commentRequestDto, User user) {
-        boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.NULL_BOARD_DATA));
 
-        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new CustomException(ErrorCode.NULL_COMMENT_DATA));
 
         if (!Objects.equals(user.getId(), comment.getUser().getId())) {
-            throw new IllegalArgumentException("댓글을 작성한 회원이 아닙니다.");
+            throw new CustomException(ErrorCode.NOT_AUTHOR);
         }
 
         comment.update(commentRequestDto.getContents());
@@ -55,12 +57,12 @@ public class CommentService {
 
     // 댓글 삭제
     public ResponseEntity<SendMessageDto> removeComment(Long boardId, Long id, User user) {
-        boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.NULL_BOARD_DATA));
 
-        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new CustomException(ErrorCode.NULL_COMMENT_DATA));
 
         if (!Objects.equals(user.getId(), comment.getUser().getId())) {
-            throw new IllegalArgumentException("댓글을 작성한 회원이 아닙니다.");
+            throw new CustomException(ErrorCode.NOT_AUTHOR);
         }
 
         commentRepository.deleteById(id);
@@ -70,9 +72,9 @@ public class CommentService {
 
     // 댓글 좋아요
     public ResponseEntity<SendMessageDto> toggleCommentLike(Long boardId, Long id, User user) {
-        boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.NULL_BOARD_DATA));
 
-        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new CustomException(ErrorCode.NULL_COMMENT_DATA));
 
         Optional<CommentLike> commentLikeOptional = commentLikeRepository.findByCommentIdAndUserId(id, user.getId());
         if (commentLikeOptional.isPresent()) {
