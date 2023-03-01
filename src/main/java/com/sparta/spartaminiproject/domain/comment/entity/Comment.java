@@ -2,6 +2,7 @@ package com.sparta.spartaminiproject.domain.comment.entity;
 
 import com.sparta.spartaminiproject.common.entity.Timestamped;
 import com.sparta.spartaminiproject.domain.board.entity.Board;
+import com.sparta.spartaminiproject.domain.recomment.entity.ReComment;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,9 @@ public class Comment extends Timestamped {
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<CommentLike> commentLikeList;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ReComment> reCommentList;
 
     public Comment(String contents, Board board, User user) {
         this.contents = contents;
