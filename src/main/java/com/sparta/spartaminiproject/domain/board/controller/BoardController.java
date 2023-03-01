@@ -20,7 +20,7 @@ public class BoardController {
 
     // 기숙사로 게시글 리스트 조회
     @GetMapping("/boards")
-    public List<BoardResponseDto.BoardList> getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @RequestParam int page, @RequestParam int size) {
+    public BoardResponseDto.BoardListWithTotalPages getBoardListFilterDormitory(@RequestParam UserDormitory dormitory, @RequestParam int page, @RequestParam int size) {
         return boardService.showBoardListFilterDormitory(dormitory, page, size);
     }
 

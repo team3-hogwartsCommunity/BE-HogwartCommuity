@@ -9,6 +9,18 @@ import java.util.List;
 public class BoardResponseDto {
 
     @Getter
+    public static class BoardListWithTotalPages {
+
+        private final int totalPages;
+        private final List<BoardList> boardLists;
+
+        public BoardListWithTotalPages(int totalPages, List<BoardList> boardLists) {
+            this.totalPages = totalPages;
+            this.boardLists = boardLists;
+        }
+    }
+
+    @Getter
     public static class BoardList {
 
         private final Long id;
