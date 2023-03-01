@@ -22,4 +22,9 @@ public class UserController {
     public ResponseEntity<SendMessageDto> login(@RequestBody UserDto.LoginRequest loginRequestDto) {
         return userService.login(loginRequestDto);
     }
+
+    @PostMapping("/checkup")
+    public ResponseEntity<SendMessageDto> checkup(@RequestBody UserDto.CheckRequest checkRequest){
+        return userService.checkUsername(checkRequest);
+    }
 }

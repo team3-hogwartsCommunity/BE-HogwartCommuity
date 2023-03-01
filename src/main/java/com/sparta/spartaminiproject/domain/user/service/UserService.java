@@ -36,12 +36,6 @@ public class UserService {
 //        UserDormitory dormitory = UserDormitory.NONE;
 
 
-        //중복확인
-        Optional<User> check = userRepository.findByUsername(username);
-        if (check.isPresent()) {
-            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
-        }
-
         //기숙사 확인
         UserDormitory dormitory = UserDormitory.NONE;
         if (signupRequest.getDormitory() == Gryffindor) {
@@ -85,5 +79,16 @@ public class UserService {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(SendMessageDto.of(SuccessCode.LOGIN_SUCCESS));
+    }
+
+    public ResponseEntity<SendMessageDto> checkUsername(UserDto.CheckRequest checkRequest){
+        String username = checkRequest.getUsername();
+        //중복확인
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.CHECKUP_SUCCESS));
     }
 }

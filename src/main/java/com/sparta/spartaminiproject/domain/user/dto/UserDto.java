@@ -14,4 +14,8 @@ public class UserDto {
         private String username;
         private String password;
     }
+    @Getter
+    public static class CheckRequest{
+        private String username;
+    }
 }
