@@ -1,4 +1,4 @@
-package com.sparta.spartaminiproject.common.security.jwt;
+package com.sparta.spartaminiproject.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;

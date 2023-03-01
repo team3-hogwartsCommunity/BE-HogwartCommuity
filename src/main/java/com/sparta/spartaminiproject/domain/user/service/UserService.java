@@ -1,7 +1,9 @@
 package com.sparta.spartaminiproject.domain.user.service;
 
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
-import com.sparta.spartaminiproject.common.security.jwt.JwtUtil;
+import com.sparta.spartaminiproject.exception.CustomException;
+import com.sparta.spartaminiproject.exception.ErrorCode;
+import com.sparta.spartaminiproject.security.jwt.JwtUtil;
 import com.sparta.spartaminiproject.common.utill.SuccessCode;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.entity.User;
@@ -37,7 +39,7 @@ public class UserService {
         //중복확인
         Optional<User> check = userRepository.findByUsername(username);
         if (check.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
 
         //기숙사 확인
@@ -72,9 +74,9 @@ public class UserService {
 
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("사용자가 등록되지 않았습니다");
+            throw new CustomException(ErrorCode.UNREGISTER_USER);
         } else if (!passwordEncoder.matches(password, user.get().getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         HttpHeaders headers = new HttpHeaders();

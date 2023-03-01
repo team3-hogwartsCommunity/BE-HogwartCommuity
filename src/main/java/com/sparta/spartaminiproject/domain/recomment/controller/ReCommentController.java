@@ -1,7 +1,7 @@
 package com.sparta.spartaminiproject.domain.recomment.controller;
 
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
-import com.sparta.spartaminiproject.common.security.user.UserDetailsImpl;
+import com.sparta.spartaminiproject.security.user.UserDetailsImpl;
 import com.sparta.spartaminiproject.domain.recomment.dto.ReCommentDto;
 import com.sparta.spartaminiproject.domain.recomment.service.ReCommentService;
 import lombok.RequiredArgsConstructor;

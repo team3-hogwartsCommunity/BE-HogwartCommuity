@@ -1,4 +1,4 @@
-package com.sparta.spartaminiproject.common.security.user;
+package com.sparta.spartaminiproject.security.user;
 
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import com.sparta.spartaminiproject.domain.user.repository.UserRepository;
