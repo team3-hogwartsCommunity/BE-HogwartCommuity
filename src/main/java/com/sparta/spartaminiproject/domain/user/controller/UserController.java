@@ -14,9 +14,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody UserDto.SignupRequest signupRequest){
-        userService.signup(signupRequest);
-        return "회원가입 성공";
+    public ResponseEntity<SendMessageDto> signup(@RequestBody UserDto.SignupRequest signupRequest){
+        return userService.signup(signupRequest);
     }
 
     @PostMapping("/login")

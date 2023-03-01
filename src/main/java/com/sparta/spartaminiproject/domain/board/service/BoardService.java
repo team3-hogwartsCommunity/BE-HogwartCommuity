@@ -1,5 +1,7 @@
 package com.sparta.spartaminiproject.domain.board.service;
 
+import com.sparta.spartaminiproject.common.dto.SendMessageDto;
+import com.sparta.spartaminiproject.common.utill.SuccessCode;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.board.dto.BoardResponseDto;
 import com.sparta.spartaminiproject.domain.board.entity.Board;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,17 +88,19 @@ public class BoardService {
 
     // 게시글 작성
     @Transactional
-    public void writeBoard(BoardRequestDto.Write boardWriteRequestDto, User user) {
+    public ResponseEntity<SendMessageDto> writeBoard(BoardRequestDto.Write boardWriteRequestDto, User user) {
         if (user.getDormitory() != boardWriteRequestDto.getDormitory()) {
             throw new IllegalArgumentException("해당 게시판의 기숙사 학생이 아닙니다.");
         }
 
         boardRepository.save(new Board(boardWriteRequestDto, user));
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.BLOG_POST_SUCCESS));
     }
 
     // 게시글 수정
     @Transactional
-    public void editBoard(Long id, BoardRequestDto.Edit boardEditRequestDto, User user) {
+    public ResponseEntity<SendMessageDto> editBoard(Long id, BoardRequestDto.Edit boardEditRequestDto, User user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         if (user.getId() != board.getUser().getId()) {
@@ -103,11 +108,13 @@ public class BoardService {
         }
 
         board.update(boardEditRequestDto);
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.BLOG_PUT_SUCCESS));
     }
 
     // 게시글 삭제
     @Transactional
-    public void removeBoard(Long id, User user) {
+    public ResponseEntity<SendMessageDto> removeBoard(Long id, User user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         if (user.getId() != board.getUser().getId()) {
@@ -115,11 +122,13 @@ public class BoardService {
         }
 
         boardRepository.deleteById(id);
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.BLOG_DELETE_SUCCESS));
     }
 
     // 게시글 좋아요
     @Transactional
-    public String toggleBoardLike(Long id, User user) {
+    public ResponseEntity<SendMessageDto> toggleBoardLike(Long id, User user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         Optional<BoardLike> boardLikeOptional = boardLikeRepository.findByBoardIdAndUserId(id, user.getId());
@@ -127,7 +136,8 @@ public class BoardService {
             BoardLike boardLike = boardLikeOptional.get();
             if (boardLike.getIsShow() == 1) {
                 boardLike.toggleLike(0);
-                return "안 좋아요";
+                return ResponseEntity.ok()
+                        .body(SendMessageDto.of(SuccessCode.NOT_LIKE_SUCCESS));
             } else {
                 boardLike.toggleLike(1);
             }
@@ -135,6 +145,7 @@ public class BoardService {
             boardLikeRepository.save(new BoardLike(user, board));
         }
 
-        return "좋아요";
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.LIKE_SUCCESS));
     }
 }
