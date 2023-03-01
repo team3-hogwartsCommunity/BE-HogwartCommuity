@@ -10,10 +10,12 @@ import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
 import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentLikeRepository;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
+import com.sparta.spartaminiproject.domain.recomment.dto.ReCommentDto;
+import com.sparta.spartaminiproject.domain.recomment.entity.ReComment;
+import com.sparta.spartaminiproject.domain.recomment.repository.ReCommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,9 +42,9 @@ public class BoardService {
 
         List<Board> boardList = boardRepository.findAllByDormitory(dormitory, pageable).getContent();   // getContent()로 List로 반환 받을 수 있음
 
-        if (boardList.size() == 0) {
-            throw new NullPointerException("아직 게시글이 존재하지 않습니다.");
-        }
+//        if (boardList.size() == 0) {
+//            throw new NullPointerException("아직 게시글이 존재하지 않습니다.");
+//        }
 
         List<BoardResponseDto.BoardList> boardDtoList = new ArrayList<>(boardList.size());
         for (Board board : boardList) {
@@ -65,7 +67,13 @@ public class BoardService {
         List<CommentDto.Response> commentResponseDtoList = new ArrayList<>(commentList.size());
 
         for (Comment comment : commentList) {
-            commentResponseDtoList.add(new CommentDto.Response(comment, commentLikeRepository.countByCommentIdAndIsShow(comment.getId(), 1)));
+            List<ReComment> reComments = reCommentRepository.findAllByCommentId(comment.getId());
+            List<ReCommentDto.Response> reCommentDtoList = new ArrayList<>(comment.getReCommentList().size());
+
+            for (ReComment reComment : reComments) {
+                reCommentDtoList.add(new ReCommentDto.Response(reComment, 0L));
+            }
+            commentResponseDtoList.add(new CommentDto.Response(comment, commentLikeRepository.countByCommentIdAndIsShow(comment.getId(), 1), reCommentDtoList));
         }
 
         return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), commentResponseDtoList);

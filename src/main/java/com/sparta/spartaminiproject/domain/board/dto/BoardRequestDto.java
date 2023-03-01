@@ -1,6 +1,6 @@
 package com.sparta.spartaminiproject.domain.board.dto;
 
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import lombok.Getter;
 
 public class BoardRequestDto {
