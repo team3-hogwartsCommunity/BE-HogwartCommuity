@@ -2,7 +2,7 @@ package com.sparta.spartaminiproject.common.security.jwt;
 
 
 import com.sparta.spartaminiproject.common.security.user.UserDetailsServiceImpl;
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;

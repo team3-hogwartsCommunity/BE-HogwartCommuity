@@ -34,6 +34,7 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final ReCommentRepository reCommentRepository;
 
     // 기숙사로 게시글 리스트 조회
     @Transactional(readOnly = true)

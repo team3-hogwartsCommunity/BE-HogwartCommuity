@@ -16,13 +16,13 @@ public class ReCommentDto {
         private final Long id;
         private final String contents;
         private final Long like;
-        private final String createAt;
+        private final String createdAt;
 
         public Response(ReComment reComment, Long like) {
             this.id = reComment.getId();
             this.contents = reComment.getContents();
             this.like = like;
-            this.createAt = reComment.getCreatedAt().toString().replace("T", " T").substring(0, 20);
+            this.createdAt = reComment.getCreatedAt().toString().replace("T", " T").substring(0, 20);
         }
     }
 }
