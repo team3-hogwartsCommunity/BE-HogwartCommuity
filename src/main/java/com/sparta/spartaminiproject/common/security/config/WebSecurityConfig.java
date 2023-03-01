@@ -16,13 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
-@EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
-    private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -44,25 +45,65 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 설정
         http.csrf().disable();
+        http.httpBasic().disable(); // REST API를 사용하기 때문에 비활성
+        http.formLogin().disable(); //
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        /*
+        SessionCreationPolicy.ALWAYS        - 스프링시큐리티가 항상 세션을 생성
+        SessionCreationPolicy.IF_REQUIRED - 스프링시큐리티가 필요시 생성(기본)
+        SessionCreationPolicy.NEVER           - 스프링시큐리티가 생성하지않지만, 기존에 존재하면 사용
+        SessionCreationPolicy.STATELESS     - 스프링시큐리티가 생성하지도않고 기존것을 사용하지도 않음
+                                                                  ->JWT 같은토큰방식을 쓸때 사용하는 설정
+        */
 
         http.authorizeRequests()
-                .antMatchers("/api/user/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/api/user/signup").permitAll()
+                .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/api/boards").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+                .antMatchers("/api/board/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+                .antMatchers("/api/comment/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+                .anyRequest().authenticated();
+
+        http.cors();    // corsConfigurationSource를 적용하기 위한 설정
 
         // Custom 로그인 페이지 사용
 //        http.formLogin().loginPage("/api/user/login-page").permitAll();
 
         // JwtAuthFilter 등록하기
 //        http.addFilterBefore(new CustomSecurityFilter( passwordEncoder()), UsernamePasswordAuthenticationFilter.class);
-        .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
         // 접근 제한 페이지 이동 설정
 //        http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
 
         return http.build();
+    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.addAllowedOrigin("http://localhost:3000");
+
+        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+
+        config.addAllowedMethod("*");
+
+        config.addAllowedHeader("Content-Type");
+        config.addAllowedHeader(JwtUtil.AUTHORIZATION_HEADER);
+
+        config.setAllowCredentials(true);
+
+        config.validateAllowCredentials();
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }
