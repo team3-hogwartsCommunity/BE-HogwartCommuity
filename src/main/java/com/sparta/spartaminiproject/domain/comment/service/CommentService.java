@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -31,18 +32,28 @@ public class CommentService {
     }
 
     // 댓글 수정
-    public void editComment(Long boardId, Long id, CommentDto.Request commentRequestDto) {
+    public void editComment(Long boardId, Long id, CommentDto.Request commentRequestDto, User user) {
         boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+
+        if (!Objects.equals(user.getId(), comment.getUser().getId())) {
+            throw new IllegalArgumentException("댓글을 작성한 회원이 아닙니다.");
+        }
+
         comment.update(commentRequestDto.getContents());
     }
 
     // 댓글 삭제
-    public void removeComment(Long boardId, Long id) {
+    public void removeComment(Long boardId, Long id, User user) {
         boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
+
+        if (!Objects.equals(user.getId(), comment.getUser().getId())) {
+            throw new IllegalArgumentException("댓글을 작성한 회원이 아닙니다.");
+        }
+
         commentRepository.deleteById(id);
     }
 

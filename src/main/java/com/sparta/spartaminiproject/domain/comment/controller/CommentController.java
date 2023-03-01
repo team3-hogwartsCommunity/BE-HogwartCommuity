@@ -23,15 +23,15 @@ public class CommentController {
 
     // 댓글 수정
     @PutMapping("/{id}")
-    public String putComment(@PathVariable Long boardId, @PathVariable Long id, @RequestBody CommentDto.Request commentRequestDto) {
-        commentService.editComment(boardId, id, commentRequestDto);
+    public String putComment(@PathVariable Long boardId, @PathVariable Long id, @RequestBody CommentDto.Request commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.editComment(boardId, id, commentRequestDto, userDetails.getUser());
         return "수정 성공";
     }
 
     // 댓글 삭제
     @DeleteMapping("/{id}")
-    public String deleteComment(@PathVariable Long boardId, @PathVariable Long id) {
-        commentService.removeComment(boardId, id);
+    public String deleteComment(@PathVariable Long boardId, @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.removeComment(boardId, id, userDetails.getUser());
         return "삭제 성공";
     }
 
