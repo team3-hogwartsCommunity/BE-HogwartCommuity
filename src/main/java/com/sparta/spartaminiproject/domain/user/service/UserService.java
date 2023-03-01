@@ -28,7 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(UserDto.SignupRequest signupRequest) {
+    public ResponseEntity<SendMessageDto> signup(UserDto.SignupRequest signupRequest) {
         String username = signupRequest.getUsername();
         String password = passwordEncoder.encode(signupRequest.getPassword());
 //        UserDormitory dormitory = UserDormitory.NONE;
@@ -59,6 +59,9 @@ public class UserService {
                     .dormitory(dormitory)
                     .build();
         userRepository.save(user);
+
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.SIGNUP_SUCCESS));
     }
 
     @Transactional

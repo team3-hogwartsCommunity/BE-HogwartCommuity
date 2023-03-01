@@ -1,5 +1,7 @@
 package com.sparta.spartaminiproject.domain.comment.service;
 
+import com.sparta.spartaminiproject.common.dto.SendMessageDto;
+import com.sparta.spartaminiproject.common.utill.SuccessCode;
 import com.sparta.spartaminiproject.domain.board.entity.Board;
 import com.sparta.spartaminiproject.domain.board.repository.BoardRepository;
 import com.sparta.spartaminiproject.domain.comment.dto.CommentDto;
@@ -9,6 +11,7 @@ import com.sparta.spartaminiproject.domain.comment.repository.CommentLikeReposit
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +28,17 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     // 댓글 작성
-    public void writeComment(Long boardId, CommentDto.Request commentRequestDto, User user) {
+    public ResponseEntity<SendMessageDto> writeComment(Long boardId, CommentDto.Request commentRequestDto, User user) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         commentRepository.save(new Comment(commentRequestDto.getContents(), board, user));
+
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.COMMENT_POST_SUCCESS));
     }
 
     // 댓글 수정
-    public void editComment(Long boardId, Long id, CommentDto.Request commentRequestDto, User user) {
+    public ResponseEntity<SendMessageDto> editComment(Long boardId, Long id, CommentDto.Request commentRequestDto, User user) {
         boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
@@ -42,10 +48,13 @@ public class CommentService {
         }
 
         comment.update(commentRequestDto.getContents());
+
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.COMMENT_PUT_SUCCESS));
     }
 
     // 댓글 삭제
-    public void removeComment(Long boardId, Long id, User user) {
+    public ResponseEntity<SendMessageDto> removeComment(Long boardId, Long id, User user) {
         boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
@@ -55,10 +64,12 @@ public class CommentService {
         }
 
         commentRepository.deleteById(id);
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.COMMENT_DELETE_SUCCESS));
     }
 
     // 댓글 좋아요
-    public String toggleCommentLike(Long boardId, Long id, User user) {
+    public ResponseEntity<SendMessageDto> toggleCommentLike(Long boardId, Long id, User user) {
         boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         Comment comment = commentRepository.findByBoardIdAndId(boardId, id).orElseThrow(() -> new IllegalArgumentException("게시글에 달린 댓글이 존재하지 않습니다."));
@@ -68,7 +79,8 @@ public class CommentService {
             CommentLike commentLike = commentLikeOptional.get();
             if (commentLike.getIsShow() == 1) {
                 commentLike.toggleLike(0);
-                return "안 좋아요";
+                return ResponseEntity.ok()
+                        .body(SendMessageDto.of(SuccessCode.NOT_LIKE_SUCCESS));
             } else {
                 commentLike.toggleLike(1);
             }
@@ -76,6 +88,7 @@ public class CommentService {
             commentLikeRepository.save(new CommentLike(user, comment));
         }
 
-        return "좋아요";
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.LIKE_SUCCESS));
     }
 }
