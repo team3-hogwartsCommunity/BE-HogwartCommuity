@@ -35,5 +35,10 @@ public class ReCommentController {
         return "삭제 성공";
     }
 
+    // 대댓글 좋아요
+    @PostMapping("/{id}/like")
+    public String postReCommentLike(@PathVariable Long commentId, @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return reCommentService.toggleReCommentLike(commentId, id, userDetails.getUser());
+    }
 }
 
