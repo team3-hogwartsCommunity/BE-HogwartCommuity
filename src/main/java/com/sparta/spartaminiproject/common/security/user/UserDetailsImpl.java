@@ -2,7 +2,7 @@ package com.sparta.spartaminiproject.common.security.user;
 
 
 import com.sparta.spartaminiproject.domain.user.entity.User;
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -5,7 +5,7 @@ import com.sparta.spartaminiproject.common.security.jwt.JwtUtil;
 import com.sparta.spartaminiproject.common.utill.SuccessCode;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.entity.User;
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import com.sparta.spartaminiproject.domain.user.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.sparta.spartaminiproject.domain.user.entity.UserDormitory.*;
+import static com.sparta.spartaminiproject.common.utill.UserDormitory.*;
 
 @Service
 @RequiredArgsConstructor

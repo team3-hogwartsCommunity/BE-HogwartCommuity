@@ -4,7 +4,7 @@ import com.sparta.spartaminiproject.common.entity.Timestamped;
 import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
 import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import com.sparta.spartaminiproject.domain.user.entity.User;
-import com.sparta.spartaminiproject.domain.user.entity.UserDormitory;
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

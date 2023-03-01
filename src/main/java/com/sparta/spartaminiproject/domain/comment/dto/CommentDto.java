@@ -17,16 +17,18 @@ public class CommentDto {
     public static class Response {
 
         private final Long id;
+        private final String username;
         private final String contents;
         private final Long like;
-        private final String createAt;
+        private final String createdAt;
         private final List<ReCommentDto.Response> reCommentList;
 
         public Response(Comment comment, Long like, List<ReCommentDto.Response> reCommentList) {
             this.id = comment.getId();
+            this.username = comment.getUser().getUsername();
             this.contents = comment.getContents();
             this.like = like;
-            this.createAt = comment.getCreatedAt().toString().replace("T", " T").substring(0, 20);
+            this.createdAt = comment.getCreatedAt().toString().replace("T", " T").substring(0, 20);
             this.reCommentList = reCommentList;
         }
     }

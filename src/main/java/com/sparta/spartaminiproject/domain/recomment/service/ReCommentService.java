@@ -4,7 +4,7 @@ import com.sparta.spartaminiproject.domain.comment.entity.Comment;
 import com.sparta.spartaminiproject.domain.comment.repository.CommentRepository;
 import com.sparta.spartaminiproject.domain.recomment.dto.ReCommentDto;
 import com.sparta.spartaminiproject.domain.recomment.entity.ReComment;
-import com.sparta.spartaminiproject.domain.recomment.repository.ReCommentLikeRepository;
+//import com.sparta.spartaminiproject.domain.recomment.repository.ReCommentLikeRepository;
 import com.sparta.spartaminiproject.domain.recomment.repository.ReCommentRepository;
 import com.sparta.spartaminiproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReCommentService {
     private final ReCommentRepository reCommentRepository;
     private final CommentRepository commentRepository;
-    private final ReCommentLikeRepository reCommentLikeRepository;
+//    private final ReCommentLikeRepository reCommentLikeRepository;
 
     @Transactional
     public void writeReComment(Long commentId, ReCommentDto.Request reCommentRequestDto, User user){

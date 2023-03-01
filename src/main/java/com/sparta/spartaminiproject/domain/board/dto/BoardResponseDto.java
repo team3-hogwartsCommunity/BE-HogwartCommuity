@@ -30,18 +30,20 @@ public class BoardResponseDto {
     public static class OneBoard {
 
         private final Long id;
+        private final String username;
         private final String title;
         private final String contents;
         private final Long like;
-        private final String createAt;
+        private final String createdAt;
         private final List<CommentDto.Response> commentList;
 
         public OneBoard(Board board, Long like, List<CommentDto.Response> commentList) {
             this.id = board.getId();
+            this.username = board.getUser().getUsername();
             this.title = board.getTitle();
             this.contents = board.getContents();
             this.like = like;
-            this.createAt = board.getCreatedAt().toString().replace("T", " T").substring(0, 20);
+            this.createdAt = board.getCreatedAt().toString().replace("T", " T").substring(0, 20);
             this.commentList = commentList;
         }
     }

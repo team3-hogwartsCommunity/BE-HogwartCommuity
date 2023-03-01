@@ -1,5 +1,6 @@
 package com.sparta.spartaminiproject.domain.user.entity;
 
+import com.sparta.spartaminiproject.common.utill.UserDormitory;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

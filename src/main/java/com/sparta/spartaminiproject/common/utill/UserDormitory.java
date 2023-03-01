@@ -1,4 +1,4 @@
-package com.sparta.spartaminiproject.domain.user.entity;
+package com.sparta.spartaminiproject.common.utill;
 
 public enum UserDormitory {
     NONE(Authority.NONE, 0),
