@@ -3,9 +3,14 @@ package com.sparta.spartaminiproject.domain.user.controller;
 import com.sparta.spartaminiproject.common.dto.SendMessageDto;
 import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import com.sparta.spartaminiproject.domain.user.service.UserService;
+import com.sparta.spartaminiproject.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +31,10 @@ public class UserController {
     @PostMapping("/checkup")
     public ResponseEntity<SendMessageDto> checkup(@RequestBody UserDto.CheckRequest checkRequest){
         return userService.checkUsername(checkRequest);
+    }
+
+    @PutMapping("/dormitory")
+    public ResponseEntity<SendMessageDto> assigment(@RequestBody UserDto.AssigmentRequest assigmentRequest, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.checkdormitory(assigmentRequest, userDetails.getUser());
     }
 }

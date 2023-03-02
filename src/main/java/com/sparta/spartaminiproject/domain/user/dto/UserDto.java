@@ -18,4 +18,8 @@ public class UserDto {
     public static class CheckRequest{
         private String username;
     }
+    @Getter
+    public static class AssigmentRequest{
+        private UserDormitory dormitory;
+    }
 }
