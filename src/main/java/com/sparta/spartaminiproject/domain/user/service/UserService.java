@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static com.sparta.spartaminiproject.common.utill.UserDormitory.*;
@@ -33,20 +34,7 @@ public class UserService {
     public ResponseEntity<SendMessageDto> signup(UserDto.SignupRequest signupRequest) {
         String username = signupRequest.getUsername();
         String password = passwordEncoder.encode(signupRequest.getPassword());
-//        UserDormitory dormitory = UserDormitory.NONE;
-
-
-        //기숙사 확인
         UserDormitory dormitory = UserDormitory.NONE;
-        if (signupRequest.getDormitory() == Gryffindor) {
-            dormitory = UserDormitory.Gryffindor;
-        } else if (signupRequest.getDormitory() == Hufflepuff) {
-            dormitory = UserDormitory.Hufflepuff;
-        } else if (signupRequest.getDormitory() == Ravenclaw) {
-            dormitory = UserDormitory.Ravenclaw;
-        } else if (signupRequest.getDormitory() == Slytherin) {
-            dormitory = UserDormitory.Slytherin;
-        }
 
 
             User user = User.builder()
@@ -90,5 +78,20 @@ public class UserService {
         }
         return ResponseEntity.ok()
                 .body(SendMessageDto.of(SuccessCode.CHECKUP_SUCCESS));
+    }
+
+    public ResponseEntity<SendMessageDto> checkdormitory(UserDto.AssigmentRequest assigmentRequest, HttpServletResponse response, HttpServletResponse response1) {
+
+        //기숙사 확인
+        UserDormitory dormitory = UserDormitory.NONE;
+        if (assigmentRequest.getDormitory() == Gryffindor) {
+            dormitory = UserDormitory.Gryffindor;
+        } else if (assigmentRequest.getDormitory() == Hufflepuff) {
+            dormitory = UserDormitory.Hufflepuff;
+        } else if (assigmentRequest.getDormitory() == Ravenclaw) {
+            dormitory = UserDormitory.Ravenclaw;
+        } else if (assigmentRequest.getDormitory() == Slytherin) {
+            dormitory = UserDormitory.Slytherin;
+        }
     }
 }
