@@ -34,14 +34,43 @@ public class UserService {
     public ResponseEntity<SendMessageDto> signup(UserDto.SignupRequest signupRequest) {
         String username = signupRequest.getUsername();
         String password = passwordEncoder.encode(signupRequest.getPassword());
-        UserDormitory dormitory = UserDormitory.NONE;
+        UserDormitory dormitory;
 
+        //중복확인
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
 
-            User user = User.builder()
-                    .username(username)
-                    .password(password)
-                    .dormitory(dormitory)
-                    .build();
+        switch(signupRequest.getDormitory()) {
+            case Gryffindor: dormitory = UserDormitory.Gryffindor;
+                break;
+            case Hufflepuff: dormitory = UserDormitory.Hufflepuff;
+                break;
+            case Ravenclaw: dormitory = UserDormitory.Ravenclaw;
+                break;
+            case Slytherin: dormitory = UserDormitory.Slytherin;
+                break;
+            default: throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
+
+//        if (signupRequest.getDormitory() == Gryffindor) {
+//            dormitory = UserDormitory.Gryffindor;
+//        } else if (signupRequest.getDormitory() == Hufflepuff) {
+//            dormitory = UserDormitory.Hufflepuff;
+//        } else if (signupRequest.getDormitory() == Ravenclaw) {
+//            dormitory = UserDormitory.Ravenclaw;
+//        } else if (signupRequest.getDormitory() == Slytherin) {
+//            dormitory = UserDormitory.Slytherin;
+//        } else {
+//            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+//        }
+
+        User user = User.builder()
+                .username(username)
+                .password(password)
+                .dormitory(dormitory)
+                .build();
         userRepository.save(user);
 
         return ResponseEntity.ok()
@@ -69,7 +98,7 @@ public class UserService {
                 .body(SendMessageDto.of(SuccessCode.LOGIN_SUCCESS));
     }
 
-    public ResponseEntity<SendMessageDto> checkUsername(UserDto.CheckRequest checkRequest){
+    public ResponseEntity<SendMessageDto> checkUsername(UserDto.CheckRequest checkRequest) {
         String username = checkRequest.getUsername();
         //중복확인
         Optional<User> user = userRepository.findByUsername(username);
@@ -80,18 +109,17 @@ public class UserService {
                 .body(SendMessageDto.of(SuccessCode.CHECKUP_SUCCESS));
     }
 
-    public ResponseEntity<SendMessageDto> checkdormitory(UserDto.AssigmentRequest assigmentRequest, HttpServletResponse response, HttpServletResponse response1) {
-
+    public ResponseEntity<SendMessageDto> checkdormitory(UserDto.AssigmentRequest assigmentRequest, User user) {
         //기숙사 확인
         UserDormitory dormitory = UserDormitory.NONE;
-        if (assigmentRequest.getDormitory() == Gryffindor) {
-            dormitory = UserDormitory.Gryffindor;
-        } else if (assigmentRequest.getDormitory() == Hufflepuff) {
-            dormitory = UserDormitory.Hufflepuff;
-        } else if (assigmentRequest.getDormitory() == Ravenclaw) {
-            dormitory = UserDormitory.Ravenclaw;
-        } else if (assigmentRequest.getDormitory() == Slytherin) {
-            dormitory = UserDormitory.Slytherin;
-        }
+
+
+        User users = userRepository.findByUsername(user.getUsername()).orElseThrow(
+                () -> new CustomException(ErrorCode.DUPLICATE_USERNAME)
+        );
+
+        users.update(assigmentRequest);
+        return ResponseEntity.ok()
+                .body(SendMessageDto.of(SuccessCode.CHECKUP_SUCCESS));
     }
 }

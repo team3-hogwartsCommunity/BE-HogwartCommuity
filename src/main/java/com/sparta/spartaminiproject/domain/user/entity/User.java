@@ -1,6 +1,8 @@
 package com.sparta.spartaminiproject.domain.user.entity;
 
 import com.sparta.spartaminiproject.common.utill.UserDormitory;
+import com.sparta.spartaminiproject.domain.board.dto.BoardRequestDto;
+import com.sparta.spartaminiproject.domain.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,5 +31,8 @@ public class User {
         this.username = username;
         this.password = password;
         this.dormitory = dormitory;
+    }
+    public void update(UserDto.AssigmentRequest assigmentRequest) {
+        this.dormitory=getDormitory();
     }
 }
