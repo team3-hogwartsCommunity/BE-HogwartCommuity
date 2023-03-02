@@ -24,15 +24,15 @@ public class CommentLike {
     private Comment comment;
 
     @Column(nullable = false)
-    private Integer isShow;
+    private Boolean isShow;
 
     public CommentLike(User user, Comment comment) {
         this.user = user;
         this.comment = comment;
-        this.isShow = 1;
+        this.isShow = true;
     }
 
-    public void toggleLike(Integer isShow) {
-        this.isShow = isShow;
+    public void toggleLike() {
+        isShow = !isShow;
     }
 }

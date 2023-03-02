@@ -60,9 +60,9 @@ public class WebSecurityConfig {
                 .antMatchers("/api/user/signup").permitAll()
                 .antMatchers("/api/user/login").permitAll()
                 .antMatchers("/api/user/checkup").permitAll()
-                .antMatchers("/api/boards").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
-                .antMatchers("/api/board/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
-                .antMatchers("/api/comment/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+//                .antMatchers("/api/boards").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+//                .antMatchers("/api/board/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+//                .antMatchers("/api/comment/**").hasAnyRole("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
                 .anyRequest().authenticated();
 
         http.cors();    // corsConfigurationSource를 적용하기 위한 설정

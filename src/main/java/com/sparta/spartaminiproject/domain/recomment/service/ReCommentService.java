@@ -70,13 +70,12 @@ public class ReCommentService {
         Optional<ReCommentLike> reCommentLikeOptional = reCommentLikeRepository.findByReCommentIdAndUserId(id, user.getId());
         if (reCommentLikeOptional.isPresent()) {
             ReCommentLike recommentLike = reCommentLikeOptional.get();
-            if (recommentLike.getIsShow() == 1) {
-                recommentLike.toggleLike(0);
+            if (recommentLike.getIsShow()) {
+                recommentLike.toggleLike();
                 return ResponseEntity.ok()
                         .body(SendMessageDto.of(SuccessCode.NOT_LIKE_SUCCESS));
-            } else {
-                recommentLike.toggleLike(1);
             }
+            recommentLike.toggleLike();
         } else {
             reCommentLikeRepository.save(new ReCommentLike(user, reComment));
         }
