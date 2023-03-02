@@ -14,7 +14,7 @@ public enum ErrorCode {
     DUPLICATE_USERNAME(BAD_REQUEST, "duplicate username"),
     UNREGISTER_USER(BAD_REQUEST, "unregister user"),
     INVALID_PASSWORD(BAD_REQUEST, "invalid password"),
-    DUPLICATE_DORMITORY(BAD_REQUEST, "duplicate dormitory"),
+    INVALID_DORMITORY(BAD_REQUEST, "invalid dormitory"),
 
     NULL_BOARD_DATA(BAD_REQUEST, "null board"),
     NULL_COMMENT_DATA(BAD_REQUEST, "null comment"),

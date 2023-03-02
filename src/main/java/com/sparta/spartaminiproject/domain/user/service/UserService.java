@@ -51,7 +51,7 @@ public class UserService {
                 break;
             case Slytherin: dormitory = UserDormitory.Slytherin;
                 break;
-            default: throw new CustomException(ErrorCode.DUPLICATE_DORMITORY);
+            default: throw new CustomException(ErrorCode.INVALID_DORMITORY);
         }
 
 //        if (signupRequest.getDormitory() == Gryffindor) {
