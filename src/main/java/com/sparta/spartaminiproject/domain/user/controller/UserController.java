@@ -40,7 +40,7 @@ public class UserController {
         headers.set(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.expireToken(token));
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(SendMessageDto.of(SuccessCode.SIGNUP_SUCCESS));
+                .body(SendMessageDto.of(SuccessCode.LOGOUT_SUCCESS));
     }
 
 
