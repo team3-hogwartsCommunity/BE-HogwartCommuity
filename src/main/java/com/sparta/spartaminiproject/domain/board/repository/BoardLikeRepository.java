@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
     Optional<BoardLike> findByBoardIdAndUserId(Long boardId, Long userId);
-    Long countByBoardIdAndIsShow(Long boardId, Integer isShow);
+    Long countByBoardIdAndIsShow(Long boardId, Boolean isShow);
 }

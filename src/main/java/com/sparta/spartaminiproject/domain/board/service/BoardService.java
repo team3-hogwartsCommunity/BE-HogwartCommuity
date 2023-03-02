@@ -58,7 +58,7 @@ public class BoardService {
 
         List<BoardResponseDto.BoardList> boardDtoList = new ArrayList<>(boardList.size());
         for (Board board : boardList) {
-            boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), 1)));
+            boardDtoList.add(new BoardResponseDto.BoardList(board, boardLikeRepository.countByBoardIdAndIsShow(board.getId(), true)));
         }
 
         return new BoardResponseDto.BoardListWithTotalCount(boardTotalCount, boardDtoList);
@@ -71,7 +71,7 @@ public class BoardService {
 
         List<Comment> commentList = commentRepository.findAllByBoardId(id);
         if (commentList.size() == 0) {
-            return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), new ArrayList<>());
+            return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, true), new ArrayList<>());
         }
 
         List<CommentDto.Response> commentResponseDtoList = new ArrayList<>(commentList.size());
@@ -83,10 +83,10 @@ public class BoardService {
             for (ReComment reComment : reComments) {
                 reCommentDtoList.add(new ReCommentDto.Response(reComment, 0L));
             }
-            commentResponseDtoList.add(new CommentDto.Response(comment, commentLikeRepository.countByCommentIdAndIsShow(comment.getId(), 1), reCommentDtoList));
+            commentResponseDtoList.add(new CommentDto.Response(comment, commentLikeRepository.countByCommentIdAndIsShow(comment.getId(), true), reCommentDtoList));
         }
 
-        return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, 1), commentResponseDtoList);
+        return new BoardResponseDto.OneBoard(board, boardLikeRepository.countByBoardIdAndIsShow(id, true), commentResponseDtoList);
     }
 
     // 게시글 작성
@@ -137,13 +137,12 @@ public class BoardService {
         Optional<BoardLike> boardLikeOptional = boardLikeRepository.findByBoardIdAndUserId(id, user.getId());
         if (boardLikeOptional.isPresent()) {
             BoardLike boardLike = boardLikeOptional.get();
-            if (boardLike.getIsShow() == 1) {
-                boardLike.toggleLike(0);
+            if (boardLike.getIsShow()) {
+                boardLike.toggleLike();
                 return ResponseEntity.ok()
                         .body(SendMessageDto.of(SuccessCode.NOT_LIKE_SUCCESS));
-            } else {
-                boardLike.toggleLike(1);
             }
+            boardLike.toggleLike();
         } else {
             boardLikeRepository.save(new BoardLike(user, board));
         }

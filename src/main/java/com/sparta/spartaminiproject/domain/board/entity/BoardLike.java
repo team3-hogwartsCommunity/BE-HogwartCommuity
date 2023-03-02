@@ -24,15 +24,15 @@ public class BoardLike {
     private Board board;
 
     @Column(nullable = false)
-    private Integer isShow;
+    private Boolean isShow;
 
     public BoardLike(User user, Board board) {
         this.user = user;
         this.board = board;
-        isShow = 1;
+        isShow = true;
     }
 
-    public void toggleLike(Integer isShow) {
-        this.isShow = isShow;
+    public void toggleLike() {
+        isShow = !isShow;
     }
 }

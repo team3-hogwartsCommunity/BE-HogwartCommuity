@@ -79,13 +79,12 @@ public class CommentService {
         Optional<CommentLike> commentLikeOptional = commentLikeRepository.findByCommentIdAndUserId(id, user.getId());
         if (commentLikeOptional.isPresent()) {
             CommentLike commentLike = commentLikeOptional.get();
-            if (commentLike.getIsShow() == 1) {
-                commentLike.toggleLike(0);
+            if (commentLike.getIsShow()) {
+                commentLike.toggleLike();
                 return ResponseEntity.ok()
                         .body(SendMessageDto.of(SuccessCode.NOT_LIKE_SUCCESS));
-            } else {
-                commentLike.toggleLike(1);
             }
+            commentLike.toggleLike();
         } else {
             commentLikeRepository.save(new CommentLike(user, comment));
         }
